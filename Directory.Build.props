@@ -1,0 +1,32 @@
+<Project>
+  <!-- Settings shared by every project of the solution. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Quality gates: every warning breaks the build, .NET analyzers and code style are enforced. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Needed by the compiler to report unused usings (IDE0005) during the build. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- Ownership and licence. -->
+    <Authors>PolygonLab</Authors>
+    <Company>PolygonLab</Company>
+    <Product>velopack-canal-maj</Product>
+    <Copyright>Copyright (c) 2026 PolygonLab</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/polygonlab-ai/velopack-canal-maj</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/polygonlab-ai/velopack-canal-maj</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Default version for local builds; build/pack.ps1 passes the release version with -p:Version=... -->
+    <Version>0.0.0-dev</Version>
+  </PropertyGroup>
+</Project>

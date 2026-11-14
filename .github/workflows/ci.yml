@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Minimal permissions: read the code only.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build, test and pack (.NET 10, Windows)
+    runs-on: windows-latest
+    steps:
+      # Actions pinned by commit SHA; Dependabot keeps them up to date.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up .NET (SDK from global.json)
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore UpdateChannel.slnx
+
+      - name: Build (Release, warnings as errors, .NET analyzers)
+        run: dotnet build UpdateChannel.slnx --configuration Release --no-restore
+
+      - name: Format (dotnet format, no change allowed)
+        run: dotnet format UpdateChannel.slnx --verify-no-changes --no-restore
+
+      - name: Tests with coverage (UpdateChannel library, 90 % minimum)
+        run: >-
+          dotnet test --solution UpdateChannel.slnx --configuration Release --no-build
+          --coverlet --coverlet-threshold 90 --coverlet-threshold-type line,branch --coverlet-threshold-stat Total
+
+      - name: Keep the coverage report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage
+          path: tests/UpdateChannel.Tests/bin/Release/net10.0/TestResults/*.cobertura.*.xml
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Demo release (dotnet publish + vpk pack)
+        shell: pwsh
+        run: ./build/pack.ps1 -Version "0.0.1-ci.${{ github.run_number }}" -Channel stable
+
+      - name: Keep the demo release
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: demo-release-stable
+          path: artifacts/releases/stable/
+          retention-days: 7
+          if-no-files-found: error

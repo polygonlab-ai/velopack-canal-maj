@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # NuGet packages (Directory.Packages.props) and .NET tools (.config/dotnet-tools.json).
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # The Velopack library and the vpk tool must always have the same version.
+      velopack:
+        patterns:
+          - Velopack
+          - vpk
+    ignore:
+      # Microsoft.Extensions.* follow the .NET LTS line (10.x); a new major comes with the next LTS.
+      - dependency-name: Microsoft.Extensions.*
+        update-types:
+          - version-update:semver-major
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

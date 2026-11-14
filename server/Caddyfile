@@ -1,0 +1,36 @@
+# Caddy 2: serve Velopack release folders over HTTPS (certificate obtained and renewed by Caddy).
+#
+# Layout: one folder per application under the root, filled by build/publish.ps1:
+#   /srv/updates/sampleapp/releases.stable.json, SampleApp-1.0.1-stable-full.nupkg, ...
+# Address given to the application (appsettings.json, UpdateChannel:FeedUrl):
+#   https://updates.example.com/sampleapp/
+#
+# Install: adapt the site address and root, then: caddy validate --config Caddyfile && caddy reload
+
+updates.example.com {
+	root * /srv/updates
+
+	# Hidden files, such as the temporary index written by build/publish.ps1 before its rename.
+	@hidden path_regexp hidden /\.
+	respond @hidden 404
+
+	header X-Content-Type-Options "nosniff"
+
+	# Release index of each channel, installer and portable archive: same name at every release,
+	# so always revalidated. A cached index would hide a new version.
+	@changing path_regexp changing /(releases\.[^/]+\.json|assets\.[^/]+\.json|RELEASES-[^/]+|[^/]+-Setup\.exe|[^/]+-Portable\.zip)$
+	header @changing Cache-Control "no-cache"
+
+	# Packages: the version is in the name and a published file never changes, so cache them for a year.
+	@packages path_regexp packages -(full|delta)\.nupkg$
+	header @packages Cache-Control "public, max-age=31536000, immutable"
+
+	# Content types Caddy cannot guess from the extension.
+	@nupkg path *.nupkg
+	header @nupkg Content-Type "application/octet-stream"
+	@releases path_regexp releases /RELEASES-[^/]+$
+	header @releases Content-Type "text/plain; charset=utf-8"
+
+	# Static files only, no directory listing.
+	file_server
+}

@@ -1,0 +1,45 @@
+<Window x:Class="SampleApp.MainWindow"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SampleApp"
+        Width="520"
+        SizeToContent="Height"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="Visible" />
+  </Window.Resources>
+  <StackPanel Margin="24">
+    <TextBlock FontSize="20" FontWeight="SemiBold" Text="SampleApp" />
+    <TextBlock Margin="0,4,0,16" Foreground="Gray" Text="Self-updating WPF application (Velopack)" />
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="140" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,2" Text="Installed version" />
+      <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,2" FontWeight="SemiBold" Text="{Binding InstalledVersion}" />
+      <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,2" Text="Channel" />
+      <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,2" FontWeight="SemiBold" Text="{Binding Channel}" />
+      <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,2" Text="Update server" />
+      <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,2" Text="{Binding FeedUrl}" TextTrimming="CharacterEllipsis" />
+    </Grid>
+
+    <TextBlock Margin="0,16,0,4" Text="{Binding StatusText}" TextWrapping="Wrap" />
+    <ProgressBar Height="6" Minimum="0" Maximum="100" Value="{Binding Progress, Mode=OneWay}"
+                 Visibility="{Binding IsDownloading, Converter={StaticResource Visible}}" />
+
+    <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
+      <Button MinWidth="150" Padding="12,4" Content="Check for updates" Command="{Binding CheckCommand}" />
+      <Button MinWidth="150" Margin="12,0,0,0" Padding="12,4" Content="Restart to update" Command="{Binding RestartCommand}"
+              Visibility="{Binding CanRestart, Converter={StaticResource Visible}}" />
+    </StackPanel>
+  </StackPanel>
+</Window>

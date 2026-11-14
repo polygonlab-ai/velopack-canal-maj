@@ -1,0 +1,35 @@
+# Build output
+bin/
+obj/
+/artifacts/
+/TestResults/
+*.user
+*.suo
+.vs/
+
+# Velopack default output folder (build/pack.ps1 writes to artifacts/releases/ instead)
+/Releases/
+
+# Coverage reports
+coverage*.xml
+coverage*.json
+coverage*.info
+
+# Dependencies (other ecosystems)
+/vendor/
+/node_modules/
+
+# Secrets: never in a repository
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

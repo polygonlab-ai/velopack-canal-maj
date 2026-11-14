@@ -1,0 +1,8 @@
+# Settings for the test projects only (the root .editorconfig still applies).
+
+[*.cs]
+# Test method names follow the Method_Scenario_Expectation convention: the underscores are intended.
+dotnet_diagnostic.CA1707.severity = none
+
+# Tests are not a public API: no XML documentation required.
+dotnet_diagnostic.CS1591.severity = none
