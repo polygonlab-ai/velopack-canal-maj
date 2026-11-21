@@ -18,6 +18,6 @@
 
     <!-- Tests: xUnit v3 on Microsoft Testing Platform (the dotnet test runner set in global.json). -->
     <PackageVersion Include="xunit.v3" Version="4.0.3" />
-    <PackageVersion Include="coverlet.MTP" Version="10.1.0" />
+    <PackageVersion Include="coverlet.MTP" Version="10.1.1" />
   </ItemGroup>
 </Project>
